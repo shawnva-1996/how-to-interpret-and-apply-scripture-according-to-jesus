@@ -17,6 +17,10 @@ header.hero::after{content:"";position:absolute;inset:0;background:linear-gradie
 .hero-in p{max-width:640px}
 main{max-width:820px;margin:0 auto;padding:24px 20px 80px}
 .controls{position:sticky;top:0;background:var(--bg);padding:12px 0;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px;align-items:center;z-index:5}
+body.collapsed header.hero,body.collapsed .controls,body.collapsed .section-img,body.collapsed main>p:last-of-type{display:none}
+body.collapsed main{max-width:900px}
+#showbar{display:none;position:fixed;top:12px;right:12px;z-index:10;font:inherit;padding:8px 14px;border-radius:20px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;opacity:.75}
+body.collapsed #showbar{display:block}
 .controls button,.controls select{font:inherit;padding:6px 12px;border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:20px;cursor:pointer}
 #progress{flex:1;min-width:120px}
 section.read{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:28px;margin:20px 0}
@@ -37,12 +41,14 @@ img.section-img{width:100%;border-radius:12px;margin:12px 0}
 <p>A bilingual reading edition: the original Taglish text, with an English translation alongside for non-Filipino readers. Published with the user's stated written permission; personal and educational use only.</p>
 <p>Photo: <a style="color:#fff" href="https://unsplash.com/photos/a-person-reading-a-book-1504052434569-70ad5836ab65">Unsplash</a> · Full text in <a style="color:#fff" href="book/">book/</a></p>
 </div></header>
+<button id="showbar" aria-label="Show navigation bar">☰ Show bar</button>
 <main>
 <div class="controls">
 <label>Language
 <select id="lang"><option value="both">Original + English</option><option value="orig">Original only</option><option value="eng">English only</option></select></label>
 <button id="smaller">A−</button><button id="larger">A+</button>
 <button id="theme">Night / Sepia / Light</button>
+<button id="collapse">Hide bar — fullscreen reading</button>
 <span id="progress"></span>
 </div>
 <img class="section-img" alt="An open Bible in quiet morning light" src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=1600&q=80">
@@ -75,7 +81,9 @@ document.getElementById('next').onclick=()=>{if(i<book.length-1){i++;show()}};
 document.getElementById('lang').onchange=show;
 document.getElementById('smaller').onclick=()=>{size=Math.max(.9,size-.1);show()};
 document.getElementById('larger').onclick=()=>{size=Math.min(1.6,size+.1);show()};
-document.getElementById('theme').onclick=()=>{ti=(ti+1)%3;document.body.className=themes[ti]};
+document.getElementById('theme').onclick=()=>{ti=(ti+1)%3;document.body.classList.remove('night','sepia');if(themes[ti])document.body.classList.add(themes[ti])};
+document.getElementById('collapse').onclick=()=>{document.body.classList.add('collapsed')};
+document.getElementById('showbar').onclick=()=>{document.body.classList.remove('collapsed')};
 document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')document.getElementById('next').click();if(e.key==='ArrowLeft')document.getElementById('prev').click()});
 fetch('book.json').then(r=>r.json()).then(d=>{book=d;show()}).catch(()=>{reader.innerHTML='<p>Could not load book.json. Please use the Markdown link above.</p>'});
 </script>
